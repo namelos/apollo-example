@@ -2,13 +2,13 @@ const { makeExecutableSchema } = require('graphql-tools')
 
 const Schema = `
 type Query {
-  hello: String
+  hello(name: String!): String
 }
 `
 
 const Resolvers = {
   Query: {
-    hello: () => 'GraphQL'
+    hello: (_, { name }) => `Hello, ${name}`
   }
 }
 
