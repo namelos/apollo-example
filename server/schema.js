@@ -8,7 +8,7 @@ type Query {
 
 const Resolvers = {
   Query: {
-    hello: () => 'GraphQL!'
+    hello: () => 'GraphQL'
   }
 }
 

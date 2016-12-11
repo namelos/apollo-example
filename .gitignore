@@ -1,3 +1,5 @@
 node_modules
 *log*
 .idea
+graphql.config.json
+graphql.schema.json
