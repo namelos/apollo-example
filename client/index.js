@@ -6,17 +6,55 @@ import gql from 'graphql-tag'
 
 const client = new Apollo()
 
-const HelloComponent = ({ data }) => <h1>{data.hello}!</h1>
-const HelloQuery = gql`
-  query ($someName: String!){
-    hello(name: $someName)
+const Todo = ({ todo: { id, text } }) => <li>{id}: {text}</li>
+Todo.fragments = {
+  todo: gql`
+    fragment TodoItem on Todo {
+      id
+      text
+    }
+  `
+}
+
+
+const AddTodoComponent = ({ mutate, data }) => {
+  let input
+  const handleSubmit = e => {
+    e.preventDefault()
+    mutate({variables: {text: input.value}})
+      .then(_ => data.refetch())
+  }
+  return <form onSubmit={ handleSubmit }>
+    <input type="text" ref={ el => input = el }/>
+  </form>
+}
+const AddTodoMutation = gql`
+  mutation addTodo($text: String!){
+    addTodo(text: $text) {
+      text
+      id
+    }
   }
 `
-const Hello = graphql(HelloQuery, {
-  options: {variables: {someName: 'GraphQL'}}
-})(HelloComponent)
+const AddTodo = graphql(AddTodoMutation)(AddTodoComponent)
+
+const TodosComponent = ({ data }) => <div>
+  <ul>
+    { data.todos && data.todos.map((todo, i) => <Todo todo={todo} key={i} />) }
+  </ul>
+  <AddTodo data={data} />
+</div>
+const TodosQuery = gql`
+  query {
+    todos {
+      ...TodoItem
+    }
+  }
+  ${Todo.fragments.todo}
+`
+const Todos = graphql(TodosQuery)(TodosComponent)
 
 render(
   <ApolloProvider client={client}>
-    <Hello/>
+    <Todos />
   </ApolloProvider>, document.querySelector('#app'))
