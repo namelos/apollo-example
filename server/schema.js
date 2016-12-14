@@ -1,21 +1,8 @@
+const fs = require('fs')
+const path = require('path')
 const { makeExecutableSchema } = require('graphql-tools')
 
-const Schema = `
-type Todo {
-  id: Int!
-  text: String
-}
-
-type Query {
-  todos: [Todo]
-  todo(id: Int!): Todo
-  hello(name: String!): String
-}
-
-type Mutation {
-  addTodo(text: String!): Todo
-}
-`
+const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf-8')
 
 const generateId = (() => {
   let id = 0
@@ -24,8 +11,7 @@ const generateId = (() => {
 
 const todos = []
 
-
-const Resolvers = {
+const resolvers = {
   Query: {
     todos: () => todos,
     todo: (_, {id}) => todos.find(todo => todo.id == id),
@@ -40,7 +26,4 @@ const Resolvers = {
   }
 }
 
-module.exports = makeExecutableSchema({
-  typeDefs: Schema,
-  resolvers: Resolvers
-})
+module.exports = makeExecutableSchema({ typeDefs, resolvers })
