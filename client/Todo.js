@@ -5,7 +5,7 @@ const Todo = ({ todo: { id, text } }) => <li>{id}: {text}</li>
 
 Todo.fragments = {
   todo: gql`
-    fragment TodoItem on Todo {
+    fragment Todo on Todo {
       id
       text
     }

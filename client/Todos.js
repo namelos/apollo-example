@@ -12,7 +12,7 @@ const TodosComponent = ({ data }) => <div>
 const TodosQuery = gql`
   query {
     todos {
-      ...TodoItem
+      ...Todo
     }
   }
   ${Todo.fragments.todo}

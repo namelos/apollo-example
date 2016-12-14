@@ -18,7 +18,7 @@ const AddTodoComponent = ({ mutate, data }) => {
 const AddTodoMutation = gql`
   mutation addTodo($text: String!){
     addTodo(text: $text) {
-      ...TodoItem
+      ...Todo
     }
   }
   ${Todo.fragments.todo}
