@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const { makeExecutableSchema } = require('graphql-tools')
+const { graphql, introspectionQuery } = require('graphql')
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf-8')
 
@@ -26,4 +27,12 @@ const resolvers = {
   }
 }
 
-module.exports = makeExecutableSchema({ typeDefs, resolvers })
+const Schema = makeExecutableSchema({ typeDefs, resolvers })
+
+graphql(Schema, introspectionQuery)
+  .then(schema => fs.writeFile(path.join(__dirname, 'schema.json'),
+    JSON.stringify(schema, null, 2),
+    err => err && console.log(`write schema failed: ${err}`)))
+  .catch(err => err && console.log(`parse schema failed: ${err}`))
+
+module.exports = Schema
